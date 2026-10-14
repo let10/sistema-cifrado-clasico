@@ -10,6 +10,7 @@ from interfaz.aplicacion import SistemaEncriptacionClasica
 from interfaz.pantallas.menu_principal import PantallaMenuPrincipal
 from interfaz.pantallas.modulo_cesar import PantallaModuloCesar
 from interfaz.pantallas.modulo_pendiente import PantallaModuloPendiente
+from interfaz.pantallas.playfair import PantallaPlayfair
 from interfaz.pantallas.modulo_sustitucion import PantallaModuloSustitucion
 from interfaz.pantallas.modulo_vigenere import PantallaModuloVigenere
 
@@ -39,13 +40,12 @@ async def test_menu_principal_tiene_los_cinco_botones():
 
 
 @pytest.mark.asyncio
-async def test_boton_playfair_abre_pantalla_de_modulo():
+async def test_boton_playfair_abre_la_pantalla_funcional_de_playfair():
     app = SistemaEncriptacionClasica()
     async with app.run_test() as pilot:
         await pilot.click("#btn_playfair")
         await pilot.pause()
-        assert isinstance(app.screen, PantallaModuloPendiente)
-        assert app.screen.nombre_modulo == "PLAYFAIR"
+        assert isinstance(app.screen, PantallaPlayfair)
 
 
 @pytest.mark.asyncio
@@ -76,12 +76,18 @@ async def test_boton_sustitucion_abre_pantalla_de_modulo():
 
 
 @pytest.mark.asyncio
-async def test_volver_al_menu_desde_modulo_pendiente():
+async def test_volver_al_menu_desde_playfair():
+    # La pantalla de Playfair es un formulario más alto que el menú y usa
+    # overflow-y: auto; se prueba con un tamaño realista en vez del
+    # tamaño mínimo por defecto (80x24) para que el botón sea clickeable.
     app = SistemaEncriptacionClasica()
-    async with app.run_test() as pilot:
+    async with app.run_test(size=(100, 45)) as pilot:
         await pilot.click("#btn_playfair")
         await pilot.pause()
-        await pilot.click("#btn_volver")
+        boton = app.screen.query_one("#btn_volver")
+        boton.scroll_visible(animate=False, immediate=True)
+        await pilot.pause()
+        assert await pilot.click("#btn_volver")
         await pilot.pause()
         assert isinstance(app.screen, PantallaMenuPrincipal)
 
