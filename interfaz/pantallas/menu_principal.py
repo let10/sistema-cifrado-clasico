@@ -11,9 +11,9 @@ from textual.screen import Screen
 from textual.widgets import Button, Footer, Static
 
 from interfaz.pantallas.modulo_pendiente import PantallaModuloPendiente
+from interfaz.pantallas.playfair import PantallaPlayfair
 
-MODULOS = {
-    "btn_playfair": "PLAYFAIR",
+MODULOS_PENDIENTES = {
     "btn_vigenere": "VIGENÈRE",
     "btn_cesar": "CÉSAR",
     "btn_sustitucion": "SUSTITUCIÓN SIMPLE",
@@ -61,7 +61,11 @@ class PantallaMenuPrincipal(Screen):
             self.action_salir_sistema()
             return
 
-        nombre_modulo = MODULOS.get(id_boton)
+        if id_boton == "btn_playfair":
+            self.app.push_screen(PantallaPlayfair())
+            return
+
+        nombre_modulo = MODULOS_PENDIENTES.get(id_boton)
         if nombre_modulo is not None:
             self.app.push_screen(PantallaModuloPendiente(nombre_modulo))
 
