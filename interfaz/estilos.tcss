@@ -104,6 +104,59 @@ Input:focus {
     align-horizontal: center;
 }
 
+.encabezado-clave {
+    width: 100%;
+    height: auto;
+    align: left bottom;
+}
+
+.encabezado-clave .etiqueta {
+    width: 1fr;
+}
+
+.encabezado-estado {
+    width: 8;
+    text-align: center;
+    color: #a8a0b5;
+    text-style: bold;
+}
+
+.encabezado-estado.procedimiento-activo {
+    color: #d8b4fe;
+}
+
+.fila-clave {
+    width: 100%;
+    height: auto;
+    align: left middle;
+}
+
+.fila-clave .input-clave {
+    width: 1fr;
+}
+
+.switch-procedimiento {
+    width: 8;
+    border: tall #79658f;
+    background: #2e2340;
+    padding: 0 1;
+}
+
+.switch-procedimiento .switch--slider {
+    color: #d8cde6;
+    background: #554768;
+}
+
+.switch-procedimiento.-on {
+    border: tall #c4b5fd;
+    background: #5b21b6;
+}
+
+.switch-procedimiento.-on .switch--slider {
+    color: #ffffff;
+    background: #a78bfa;
+}
+
 .fila-botones Button {
     width: 1fr;
     margin: 0 1;

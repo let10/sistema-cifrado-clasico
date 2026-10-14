@@ -4,6 +4,7 @@ Ejecutar con: python3 -m pytest tests/ -v
 """
 
 import pytest
+from textual.widgets import Static, Switch
 
 from interfaz.aplicacion import SistemaEncriptacionClasica
 from interfaz.pantallas.menu_principal import PantallaMenuPrincipal
@@ -102,6 +103,11 @@ async def test_vigenere_cifra_y_muestra_procedimiento_solo_si_se_activa():
     async with app.run_test(size=(110, 45)) as pilot:
         await pilot.click("#btn_vigenere")
         await pilot.pause()
+        interruptor = app.screen.query_one("#mostrar_procedimiento", Switch)
+        estado = app.screen.query_one("#estado_procedimiento", Static)
+        assert not interruptor.value
+        assert str(estado.render()) == "PASOS: NO"
+
         app.screen.query_one("#input_mensaje").value = "CRIPTOGRAFIA"
         app.screen.query_one("#input_clave").value = "SOL"
         await pilot.click("#btn_cifrar")
@@ -112,11 +118,21 @@ async def test_vigenere_cifra_y_muestra_procedimiento_solo_si_se_activa():
         assert "PROCEDIMIENTO" not in str(resultado)
 
         await pilot.click("#mostrar_procedimiento")
+        await pilot.pause()
+        assert interruptor.value
+        assert str(estado.render()) == "PASOS: SI"
+        assert estado.has_class("procedimiento-activo")
         await pilot.click("#btn_cifrar")
         await pilot.pause()
         resultado = str(app.screen.query_one("#resultado").render())
         assert "PROCEDIMIENTO - CIFRADO VIGENERE" in str(resultado)
         assert "TRANSFORMACION CARACTER POR CARACTER" in str(resultado)
+
+        await pilot.click("#mostrar_procedimiento")
+        await pilot.pause()
+        assert not interruptor.value
+        assert str(estado.render()) == "PASOS: NO"
+        assert not estado.has_class("procedimiento-activo")
 
 
 @pytest.mark.asyncio
