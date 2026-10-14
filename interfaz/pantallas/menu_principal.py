@@ -8,10 +8,10 @@ from textual.widgets import Button, Footer, Static
 from interfaz.pantallas.modulo_cesar import PantallaModuloCesar
 from interfaz.pantallas.modulo_pendiente import PantallaModuloPendiente
 from interfaz.pantallas.modulo_sustitucion import PantallaModuloSustitucion
+from interfaz.pantallas.modulo_vigenere import PantallaModuloVigenere
 
 PENDIENTES = {
     "btn_playfair": "PLAYFAIR",
-    "btn_vigenere": "VIGENERE",
 }
 
 
@@ -43,6 +43,8 @@ class PantallaMenuPrincipal(Screen):
             self.app.push_screen(PantallaModuloCesar())
         elif bid == "btn_sustitucion":
             self.app.push_screen(PantallaModuloSustitucion())
+        elif bid == "btn_vigenere":
+            self.app.push_screen(PantallaModuloVigenere())
         else:
             nombre = PENDIENTES.get(bid)
             if nombre:

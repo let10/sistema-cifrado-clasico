@@ -130,6 +130,10 @@ Input:focus {
     border: round #7b5cff;
 }
 
+.panel-vigenere {
+    height: 8;
+}
+
 .panel-resultado Static {
     color: #ede9fe;
 }
