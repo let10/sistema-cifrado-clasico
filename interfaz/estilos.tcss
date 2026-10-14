@@ -1,0 +1,126 @@
+/* Tema oscuro violeta del Sistema de Encriptación Clásica */
+
+Screen {
+    background: #120a1f;
+    color: #ede9fe;
+    align: center middle;
+}
+
+.contenedor-principal {
+    width: auto;
+    height: auto;
+    align: center middle;
+    padding: 1 4;
+}
+
+.titulo {
+    text-style: bold;
+    color: #c4b5fd;
+    text-align: center;
+    width: 100%;
+    content-align: center middle;
+}
+
+.subtitulo {
+    color: #a78bfa;
+    text-align: center;
+    width: 100%;
+    content-align: center middle;
+    margin-bottom: 1;
+}
+
+.panel-menu {
+    width: 50;
+    height: auto;
+    background: #1b1030;
+    border: round #7c3aed;
+    padding: 0 3;
+    align: center middle;
+}
+
+.grupo-botones {
+    width: 100%;
+    height: auto;
+    align: center middle;
+}
+
+.boton-menu {
+    width: 100%;
+    margin-bottom: 0;
+    background: #2e1a4d;
+    color: #ede9fe;
+    border: round #7c3aed;
+    text-style: bold;
+}
+
+.boton-menu:hover {
+    background: #4c2a80;
+    border: round #a78bfa;
+}
+
+.boton-menu:focus {
+    background: #6d28d9;
+    border: round #c4b5fd;
+    color: #ffffff;
+}
+
+.boton-salir {
+    width: 100%;
+    margin-top: 0;
+    background: #1b1030;
+    color: #c4b5fd;
+    border: round #5b21b6;
+    text-style: bold;
+}
+
+.boton-salir:hover {
+    background: #3b1d63;
+    border: round #a78bfa;
+}
+
+.boton-salir:focus {
+    background: #5b21b6;
+    color: #ffffff;
+    border: round #c4b5fd;
+}
+
+.panel-modulo {
+    width: 60;
+    height: auto;
+    background: #1b1030;
+    border: round #7c3aed;
+    padding: 2 4;
+    align: center middle;
+}
+
+.nombre-modulo {
+    text-style: bold;
+    color: #c4b5fd;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 1;
+}
+
+.mensaje-pendiente {
+    color: #ede9fe;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 1;
+}
+
+.responsable-modulo {
+    color: #a78bfa;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 1;
+}
+
+Footer {
+    background: #1b1030;
+    color: #c4b5fd;
+}
+
+Header {
+    background: #1b1030;
+    color: #c4b5fd;
+}
