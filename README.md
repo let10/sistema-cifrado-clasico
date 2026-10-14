@@ -13,12 +13,10 @@ desarrollados por cada integrante del equipo.
 
 ## Estado actual
 
-Esta etapa entrega únicamente el **punto de entrada (`main.py`) y la
-interfaz principal**: el menú con los cinco botones y la navegación
-entre pantallas. Ningún algoritmo de cifrado/descifrado está
-implementado todavía; cada módulo muestra una pantalla de "pendiente
-de integración" hasta que su responsable complete el código en
-`algoritmos/`.
+El sistema incluye la interfaz principal y los módulos funcionales de
+César, sustitución simple y Vigenère. Playfair permanece pendiente de
+integración. Vigenère permite cifrar y descifrar desde su pantalla y
+mostrar, opcionalmente, el procedimiento carácter por carácter.
 
 ## Requisitos
 
@@ -61,20 +59,26 @@ sistema-cifrado-clasico/
 │   ├── estilos.tcss                Tema oscuro violeta
 │   └── pantallas/
 │       ├── menu_principal.py       Menú con los 5 botones
+│       ├── modulo_cesar.py         Interfaz de César
+│       ├── modulo_sustitucion.py   Interfaz de sustitución simple
+│       ├── modulo_vigenere.py      Interfaz de Vigenère
 │       └── modulo_pendiente.py     Pantalla genérica de módulo
 ├── algoritmos/
-│   ├── playfair.py                 Pendiente
-│   └── vigenere.py                 Pendiente
+│   ├── cesar.py                    Cifrado César
+│   ├── sustitucion.py              Sustitución simple
+│   ├── vigenere.py                 Cifrado Vigenère
+│   └── playfair.py                 Pendiente
 └── tests/
-    └── test_navegacion.py          Pruebas funcionales de navegación
+    ├── test_navegacion.py          Pruebas funcionales de navegación
+    └── test_vigenere.py            Pruebas del algoritmo Vigenère
 ```
 
-Los módulos de `algoritmos/` expondrán el contrato `cifrar(mensaje,
-clave)` / `descifrar(mensaje, clave)` cuando se implementen, conservando
-espacios, números y signos de puntuación según las reglas de cada
-algoritmo. César y sustitución simple todavía no tienen archivo en
-`algoritmos/`: solo existen como botones del menú con pantalla
-"pendiente de integración".
+Los módulos de algoritmos exponen `cifrar(mensaje, clave)` y
+`descifrar(mensaje, clave)`, conservando espacios, números y signos
+según las reglas de cada algoritmo. En Vigenère la clave debe contener
+solo letras A-Z; los caracteres que no son letras se conservan y no
+avanzan la clave. Su casilla de procedimiento está desactivada por
+defecto.
 
 ## Pruebas
 
@@ -83,17 +87,12 @@ source .venv/bin/activate
 python -m pytest tests/ -v
 ```
 
-Las pruebas actuales verifican que el menú principal se muestre al
-iniciar, que existan los cinco botones esperados, que cada botón
-navegue a la pantalla de módulo correcta, que sea posible volver al
-menú (con el botón o con Esc) y que "Salir del sistema" cierre la
-aplicación.
+Las pruebas verifican navegación, el cifrado/descifrado de Vigenère,
+la validación de la clave, la conservación de caracteres y la
+visualización opcional del procedimiento.
 
 ## Nota sobre los requisitos del docente
 
 El documento de la tarea exige explícitamente los algoritmos **César,
-sustitución simple y Vigenère** (objetivo específico 1), aunque la
-rúbrica de la sección 16 permite un mínimo de dos algoritmos y admite
-Playfair y Afín como alternativas válidas. El menú principal ya cubre
-los cuatro algoritmos (Playfair, Vigenère, César y sustitución simple),
-satisfaciendo tanto el objetivo específico 1 como la rúbrica.
+sustitución simple y Vigenère** (objetivo específico 1). Los tres están
+implementados; Playfair aparece en el menú, pero todavía está pendiente.

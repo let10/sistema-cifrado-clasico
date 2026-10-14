@@ -10,15 +10,10 @@ from textual.containers import Vertical
 from textual.screen import Screen
 from textual.widgets import Button, Footer, Static
 
-from interfaz.pantallas.modulo_pendiente import PantallaModuloPendiente
+from interfaz.pantallas.modulo_cesar import PantallaModuloCesar
+from interfaz.pantallas.modulo_sustitucion import PantallaModuloSustitucion
+from interfaz.pantallas.modulo_vigenere import PantallaModuloVigenere
 from interfaz.pantallas.playfair import PantallaPlayfair
-
-MODULOS_PENDIENTES = {
-    "btn_vigenere": "VIGENÈRE",
-    "btn_cesar": "CÉSAR",
-    "btn_sustitucion": "SUSTITUCIÓN SIMPLE",
-}
-
 
 class PantallaMenuPrincipal(Screen):
     """Pantalla inicial con la navegación hacia los módulos del equipo."""
@@ -65,9 +60,14 @@ class PantallaMenuPrincipal(Screen):
             self.app.push_screen(PantallaPlayfair())
             return
 
-        nombre_modulo = MODULOS_PENDIENTES.get(id_boton)
-        if nombre_modulo is not None:
-            self.app.push_screen(PantallaModuloPendiente(nombre_modulo))
+        pantallas = {
+            "btn_vigenere": PantallaModuloVigenere,
+            "btn_cesar": PantallaModuloCesar,
+            "btn_sustitucion": PantallaModuloSustitucion,
+        }
+        pantalla = pantallas.get(id_boton)
+        if pantalla is not None:
+            self.app.push_screen(pantalla())
 
     def action_enfocar_siguiente(self) -> None:
         self.focus_next()
