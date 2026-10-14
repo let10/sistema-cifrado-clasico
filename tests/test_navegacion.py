@@ -4,11 +4,15 @@ Ejecutar con: python3 -m pytest tests/ -v
 """
 
 import pytest
+from textual.widgets import Static, Switch
 
 from interfaz.aplicacion import SistemaEncriptacionClasica
 from interfaz.pantallas.menu_principal import PantallaMenuPrincipal
+from interfaz.pantallas.modulo_cesar import PantallaModuloCesar
 from interfaz.pantallas.modulo_pendiente import PantallaModuloPendiente
 from interfaz.pantallas.playfair import PantallaPlayfair
+from interfaz.pantallas.modulo_sustitucion import PantallaModuloSustitucion
+from interfaz.pantallas.modulo_vigenere import PantallaModuloVigenere
 
 
 @pytest.mark.asyncio
@@ -50,8 +54,7 @@ async def test_boton_vigenere_abre_pantalla_de_modulo():
     async with app.run_test() as pilot:
         await pilot.click("#btn_vigenere")
         await pilot.pause()
-        assert isinstance(app.screen, PantallaModuloPendiente)
-        assert app.screen.nombre_modulo == "VIGENÈRE"
+        assert isinstance(app.screen, PantallaModuloVigenere)
 
 
 @pytest.mark.asyncio
@@ -60,8 +63,7 @@ async def test_boton_cesar_abre_pantalla_de_modulo():
     async with app.run_test() as pilot:
         await pilot.click("#btn_cesar")
         await pilot.pause()
-        assert isinstance(app.screen, PantallaModuloPendiente)
-        assert app.screen.nombre_modulo == "CÉSAR"
+        assert isinstance(app.screen, PantallaModuloCesar)
 
 
 @pytest.mark.asyncio
@@ -70,8 +72,7 @@ async def test_boton_sustitucion_abre_pantalla_de_modulo():
     async with app.run_test() as pilot:
         await pilot.click("#btn_sustitucion")
         await pilot.pause()
-        assert isinstance(app.screen, PantallaModuloPendiente)
-        assert app.screen.nombre_modulo == "SUSTITUCIÓN SIMPLE"
+        assert isinstance(app.screen, PantallaModuloSustitucion)
 
 
 @pytest.mark.asyncio
@@ -83,7 +84,10 @@ async def test_volver_al_menu_desde_playfair():
     async with app.run_test(size=(100, 45)) as pilot:
         await pilot.click("#btn_playfair")
         await pilot.pause()
-        await pilot.click("#btn_volver")
+        boton = app.screen.query_one("#btn_volver")
+        boton.scroll_visible(animate=False, immediate=True)
+        await pilot.pause()
+        assert await pilot.click("#btn_volver")
         await pilot.pause()
         assert isinstance(app.screen, PantallaMenuPrincipal)
 
@@ -97,6 +101,44 @@ async def test_escape_vuelve_al_menu_desde_modulo_pendiente():
         await pilot.press("escape")
         await pilot.pause()
         assert isinstance(app.screen, PantallaMenuPrincipal)
+
+
+@pytest.mark.asyncio
+async def test_vigenere_cifra_y_muestra_procedimiento_solo_si_se_activa():
+    app = SistemaEncriptacionClasica()
+    async with app.run_test(size=(110, 45)) as pilot:
+        await pilot.click("#btn_vigenere")
+        await pilot.pause()
+        interruptor = app.screen.query_one("#mostrar_procedimiento", Switch)
+        estado = app.screen.query_one("#estado_procedimiento", Static)
+        assert not interruptor.value
+        assert str(estado.render()) == "PASOS: NO"
+
+        app.screen.query_one("#input_mensaje").value = "CRIPTOGRAFIA"
+        app.screen.query_one("#input_clave").value = "SOL"
+        await pilot.click("#btn_cifrar")
+        await pilot.pause()
+
+        resultado = str(app.screen.query_one("#resultado").render())
+        assert "METODO: Vigenere" in str(resultado)
+        assert "PROCEDIMIENTO" not in str(resultado)
+
+        await pilot.click("#mostrar_procedimiento")
+        await pilot.pause()
+        assert interruptor.value
+        assert str(estado.render()) == "PASOS: SI"
+        assert estado.has_class("procedimiento-activo")
+        await pilot.click("#btn_cifrar")
+        await pilot.pause()
+        resultado = str(app.screen.query_one("#resultado").render())
+        assert "PROCEDIMIENTO - CIFRADO VIGENERE" in str(resultado)
+        assert "TRANSFORMACION CARACTER POR CARACTER" in str(resultado)
+
+        await pilot.click("#mostrar_procedimiento")
+        await pilot.pause()
+        assert not interruptor.value
+        assert str(estado.render()) == "PASOS: NO"
+        assert not estado.has_class("procedimiento-activo")
 
 
 @pytest.mark.asyncio

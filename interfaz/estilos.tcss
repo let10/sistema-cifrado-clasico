@@ -1,96 +1,70 @@
-/* Tema oscuro violeta del Sistema de Encriptación Clásica */
-
 Screen {
     background: #120a1f;
     color: #ede9fe;
     align: center middle;
 }
 
-.contenedor-principal {
+/* -------- MENU PRINCIPAL -------- */
+
+.contenedor-menu {
     width: auto;
     height: auto;
     align: center middle;
-    padding: 1 4;
+    padding: 1 2;
 }
 
 .titulo {
     text-style: bold;
     color: #c4b5fd;
     text-align: center;
-    width: 100%;
-    content-align: center middle;
+    width: auto;
 }
 
 .subtitulo {
     color: #a78bfa;
     text-align: center;
-    width: 100%;
-    content-align: center middle;
+    width: auto;
     margin-bottom: 1;
 }
 
 .panel-menu {
-    width: 50;
+    width: 44;
     height: auto;
     background: #1b1030;
     border: round #7c3aed;
-    padding: 0 3;
-    align: center middle;
+    padding: 1 2;
 }
 
-.grupo-botones {
+.panel-menu Button {
     width: 100%;
-    height: auto;
-    align: center middle;
-}
-
-.boton-menu {
-    width: 100%;
-    margin-bottom: 0;
+    margin-bottom: 1;
     background: #2e1a4d;
     color: #ede9fe;
     border: round #7c3aed;
     text-style: bold;
 }
 
-.boton-menu:hover {
+.panel-menu Button:hover {
     background: #4c2a80;
     border: round #a78bfa;
 }
 
-.boton-menu:focus {
+.panel-menu Button:focus {
     background: #6d28d9;
     border: round #c4b5fd;
     color: #ffffff;
 }
 
-.boton-salir {
-    width: 100%;
-    margin-top: 0;
-    background: #1b1030;
-    color: #c4b5fd;
-    border: round #5b21b6;
-    text-style: bold;
-}
+/* -------- MODULOS -------- */
 
-.boton-salir:hover {
-    background: #3b1d63;
-    border: round #a78bfa;
-}
-
-.boton-salir:focus {
-    background: #5b21b6;
-    color: #ffffff;
-    border: round #c4b5fd;
-}
-
-.panel-modulo {
-    width: 60;
+.contenedor-modulo {
+    width: 100;
     height: auto;
+    max-height: 95%;
+    align: center middle;
     background: #1b1030;
     border: round #7c3aed;
-    padding: 2 4;
-    align: center middle;
+    padding: 1 3;
 }
 
 .nombre-modulo {
@@ -108,12 +82,131 @@ Screen {
     margin-bottom: 1;
 }
 
-.responsable-modulo {
-    color: #a78bfa;
-    text-align: center;
-    width: 100%;
-    margin-bottom: 1;
+.etiqueta {
+    color: #c9b6ff;
+    margin-top: 1;
 }
+
+Input {
+    border: round #7b5cff;
+    background: #120a1f;
+    color: #ede9fe;
+    width: 100%;
+}
+
+Input:focus {
+    border: round #b794ff;
+}
+
+.fila-botones {
+    height: auto;
+    margin-top: 1;
+    align-horizontal: center;
+}
+
+.encabezado-clave {
+    width: 100%;
+    height: auto;
+    align: left bottom;
+}
+
+.encabezado-clave .etiqueta {
+    width: 1fr;
+}
+
+.encabezado-estado {
+    width: 8;
+    text-align: center;
+    color: #a8a0b5;
+    text-style: bold;
+}
+
+.encabezado-estado.procedimiento-activo {
+    color: #d8b4fe;
+}
+
+.fila-clave {
+    width: 100%;
+    height: auto;
+    align: left middle;
+}
+
+.fila-clave .input-clave {
+    width: 1fr;
+}
+
+.switch-procedimiento {
+    width: 8;
+    border: tall #79658f;
+    background: #2e2340;
+    padding: 0 1;
+}
+
+.switch-procedimiento .switch--slider {
+    color: #d8cde6;
+    background: #554768;
+}
+
+.switch-procedimiento.-on {
+    border: tall #c4b5fd;
+    background: #5b21b6;
+}
+
+.switch-procedimiento.-on .switch--slider {
+    color: #ffffff;
+    background: #a78bfa;
+}
+
+.fila-botones Button {
+    width: 1fr;
+    margin: 0 1;
+    background: #6d28d9;
+    color: #ffffff;
+    border: round #c4b5fd;
+    text-style: bold;
+}
+
+.fila-botones Button:hover {
+    background: #7c3aed;
+}
+
+.fila-botones Button:focus {
+    background: #a78bfa;
+    border: round #ffffff;
+}
+
+.panel-resultado {
+    height: 14;
+    margin-top: 1;
+    padding: 1;
+    background: #120a1f;
+    border: round #7b5cff;
+}
+
+.panel-vigenere {
+    height: 8;
+}
+
+.panel-resultado Static {
+    color: #ede9fe;
+}
+
+.contenedor-modulo > Button {
+    width: 100%;
+    margin-top: 1;
+    background: #1b1030;
+    color: #c4b5fd;
+    border: round #5b21b6;
+    text-style: bold;
+}
+
+.contenedor-modulo > Button:focus {
+    background: #5b21b6;
+    color: #ffffff;
+    border: round #c4b5fd;
+}
+
+/* -------- FOOTER -------- */
 
 Footer {
     background: #1b1030;
@@ -311,4 +404,16 @@ Header {
 .boton-control:disabled {
     color: #5b4a78;
     border: round #3b1d63;
+}
+
+/* Centrado del menú principal */
+PantallaMenuPrincipal {
+    align: center middle;
+}
+
+PantallaMenuPrincipal .contenedor-principal {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    align: center middle;
 }
