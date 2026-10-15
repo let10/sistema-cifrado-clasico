@@ -6,11 +6,17 @@ from textual.screen import Screen
 from textual.widgets import Button, Footer, Input, Label, Static, Switch
 
 from algoritmos import vigenere
+from algoritmos.modelos import PasoProcedimiento
+from interfaz.pantallas.procedimiento import PantallaProcedimiento
 
 
 class PantallaModuloVigenere(Screen):
 
     BINDINGS = [("escape", "volver_menu", "Volver al menu")]
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._pasos: tuple[PasoProcedimiento, ...] = ()
 
     def compose(self) -> ComposeResult:
         with Vertical(classes="contenedor-modulo modulo-vigenere"):
@@ -44,7 +50,12 @@ class PantallaModuloVigenere(Screen):
                 yield Button("Cifrar", id="btn_cifrar", variant="primary")
                 yield Button("Descifrar", id="btn_descifrar", variant="primary")
             with VerticalScroll(classes="panel-resultado panel-vigenere"):
-                yield Static("Esperando accion...", id="resultado")
+                yield Static("Ingresa el mensaje y la clave.", id="resultado")
+            yield Button(
+                "VER PROCEDIMIENTO DETALLADO",
+                id="btn_ver_procedimiento",
+                disabled=True,
+            )
             yield Button("<- Volver al menu", id="btn_volver")
         yield Footer()
 
@@ -52,6 +63,9 @@ class PantallaModuloVigenere(Screen):
         bid = event.button.id
         if bid == "btn_volver":
             self.app.pop_screen()
+            return
+        if bid == "btn_ver_procedimiento":
+            self._ver_procedimiento()
             return
         if bid == "btn_cifrar":
             self._procesar(True)
@@ -79,20 +93,25 @@ class PantallaModuloVigenere(Screen):
                 resultado = vigenere.descifrar(mensaje, clave)
                 accion = "DESCIFRADO"
 
-            salida_texto = (
-                f"METODO: Vigenere\n"
-                f"ACCION: {accion}\n"
+            self._pasos = vigenere.generar_pasos(mensaje, clave, es_cifrado)
+            salida.update(
+                f"ALGORITMO: Vigenère\n"
+                f"OPERACIÓN: {accion}\n"
                 f"ORIGINAL: {mensaje}\n"
                 f"RESULTADO: {resultado}"
             )
+            boton_pasos = self.query_one("#btn_ver_procedimiento", Button)
+            boton_pasos.disabled = False
             if mostrar_procedimiento:
-                procedimiento = vigenere.obtener_procedimiento(
-                    mensaje, clave, es_cifrado
-                )
-                salida_texto += f"\n\n{procedimiento}"
-            salida.update(salida_texto)
+                self._ver_procedimiento()
         except ValueError as error:
             salida.update(f"Error: {error}")
+            self._pasos = ()
+            self.query_one("#btn_ver_procedimiento", Button).disabled = True
+
+    def _ver_procedimiento(self) -> None:
+        if self._pasos:
+            self.app.push_screen(PantallaProcedimiento("Vigenère", self._pasos))
 
     def action_volver_menu(self) -> None:
         self.app.pop_screen()

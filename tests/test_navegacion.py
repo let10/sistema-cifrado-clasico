@@ -5,14 +5,15 @@ Ejecutar con: python3 -m pytest tests/ -v
 
 import pytest
 from textual.widgets import Static, Switch
+from textual.widgets import DataTable
 
 from interfaz.aplicacion import SistemaEncriptacionClasica
 from interfaz.pantallas.menu_principal import PantallaMenuPrincipal
 from interfaz.pantallas.modulo_cesar import PantallaModuloCesar
-from interfaz.pantallas.modulo_pendiente import PantallaModuloPendiente
 from interfaz.pantallas.playfair import PantallaPlayfair
 from interfaz.pantallas.modulo_sustitucion import PantallaModuloSustitucion
 from interfaz.pantallas.modulo_vigenere import PantallaModuloVigenere
+from interfaz.pantallas.procedimiento import PantallaProcedimiento
 
 
 @pytest.mark.asyncio
@@ -120,8 +121,10 @@ async def test_vigenere_cifra_y_muestra_procedimiento_solo_si_se_activa():
         await pilot.pause()
 
         resultado = str(app.screen.query_one("#resultado").render())
-        assert "METODO: Vigenere" in str(resultado)
+        assert "ALGORITMO: Vigenère" in str(resultado)
         assert "PROCEDIMIENTO" not in str(resultado)
+        assert not isinstance(app.screen, PantallaProcedimiento)
+        assert not app.screen.query_one("#btn_ver_procedimiento").disabled
 
         await pilot.click("#mostrar_procedimiento")
         await pilot.pause()
@@ -130,15 +133,64 @@ async def test_vigenere_cifra_y_muestra_procedimiento_solo_si_se_activa():
         assert estado.has_class("procedimiento-activo")
         await pilot.click("#btn_cifrar")
         await pilot.pause()
-        resultado = str(app.screen.query_one("#resultado").render())
-        assert "PROCEDIMIENTO - CIFRADO VIGENERE" in str(resultado)
-        assert "TRANSFORMACION CARACTER POR CARACTER" in str(resultado)
+        assert isinstance(app.screen, PantallaProcedimiento)
+        assert str(app.screen.query_one("#titulo_paso", Static).render()) == (
+            "Datos de la operación"
+        )
+        tabla = app.screen.query_one("#tabla_procedimiento", DataTable)
+        assert tabla.row_count == 4
+
+        await pilot.click("#btn_siguiente")
+        await pilot.pause(0.25)
+        assert str(app.screen.query_one("#titulo_paso", Static).render()) == (
+            "Alineación de la clave"
+        )
+        assert app.screen.query_one("#tabla_procedimiento", DataTable).row_count == 12
+
+        await pilot.press("escape")
+        await pilot.pause()
+        assert isinstance(app.screen, PantallaModuloVigenere)
 
         await pilot.click("#mostrar_procedimiento")
         await pilot.pause()
         assert not interruptor.value
         assert str(estado.render()) == "PASOS: NO"
         assert not estado.has_class("procedimiento-activo")
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("boton_menu", "mensaje", "clave", "algoritmo"),
+    [
+        ("#btn_cesar", "HOLA", "3", "César"),
+        (
+            "#btn_sustitucion",
+            "HOLA",
+            "QWERTYUIOPASDFGHJKLZXCVBNM",
+            "Sustitución simple",
+        ),
+    ],
+)
+async def test_cesar_y_sustitucion_muestran_procedimiento_en_tabla(
+    boton_menu, mensaje, clave, algoritmo
+):
+    app = SistemaEncriptacionClasica()
+    async with app.run_test(size=(110, 50)) as pilot:
+        await pilot.click(boton_menu)
+        await pilot.pause()
+        app.screen.query_one("#input_mensaje").value = mensaje
+        app.screen.query_one("#input_clave").value = clave
+        await pilot.click("#btn_cifrar")
+        await pilot.pause()
+
+        resultado = str(app.screen.query_one("#resultado").render())
+        assert f"ALGORITMO: {algoritmo}" in resultado
+        assert not isinstance(app.screen, PantallaProcedimiento)
+
+        await pilot.click("#btn_ver_procedimiento")
+        await pilot.pause()
+        assert isinstance(app.screen, PantallaProcedimiento)
+        assert app.screen.query_one("#tabla_procedimiento", DataTable).row_count > 0
 
 
 @pytest.mark.asyncio

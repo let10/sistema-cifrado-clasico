@@ -13,10 +13,11 @@ desarrollados por cada integrante del equipo.
 
 ## Estado actual
 
-El sistema incluye la interfaz principal y los módulos funcionales de
-César, sustitución simple y Vigenère. Playfair permanece pendiente de
-integración. Vigenère permite cifrar y descifrar desde su pantalla y
-mostrar, opcionalmente, el procedimiento carácter por carácter.
+El sistema incluye una interfaz de terminal para César, sustitución
+simple, Vigenère y Playfair. César, sustitución simple y Vigenère
+muestran el resultado por separado del procedimiento educativo. El
+procedimiento se presenta en una vista interactiva con tablas reales,
+pasos navegables y contenido desplazable.
 
 ## Requisitos
 
@@ -62,23 +63,29 @@ sistema-cifrado-clasico/
 │       ├── modulo_cesar.py         Interfaz de César
 │       ├── modulo_sustitucion.py   Interfaz de sustitución simple
 │       ├── modulo_vigenere.py      Interfaz de Vigenère
+│       ├── procedimiento.py        Vista tabular paso a paso
+│       ├── playfair.py             Interfaz de Playfair
+│       ├── playfair_pasos.py       Procedimiento interactivo Playfair
 │       └── modulo_pendiente.py     Pantalla genérica de módulo
 ├── algoritmos/
+│   ├── modelos.py                  Tipos compartidos de procedimientos
 │   ├── cesar.py                    Cifrado César
 │   ├── sustitucion.py              Sustitución simple
 │   ├── vigenere.py                 Cifrado Vigenère
-│   └── playfair.py                 Pendiente
+│   └── playfair.py                 Cifrado Playfair
 └── tests/
     ├── test_navegacion.py          Pruebas funcionales de navegación
-    └── test_vigenere.py            Pruebas del algoritmo Vigenère
+    ├── test_vigenere.py            Pruebas del algoritmo Vigenère
+    └── test_procedimiento_tabular.py Pruebas de procedimientos estructurados
 ```
 
 Los módulos de algoritmos exponen `cifrar(mensaje, clave)` y
-`descifrar(mensaje, clave)`, conservando espacios, números y signos
-según las reglas de cada algoritmo. En Vigenère la clave debe contener
-solo letras A-Z; los caracteres que no son letras se conservan y no
-avanzan la clave. Su casilla de procedimiento está desactivada por
-defecto.
+`descifrar(mensaje, clave)`. En César, sustitución simple y Vigenère
+los espacios, números y signos se conservan. En Vigenère, la clave
+debe contener letras A-Z y los caracteres que no son letras no avanzan
+la clave. El interruptor «Mostrar procedimiento» permite abrir
+automáticamente el desglose; también se puede consultar con el botón
+«Ver procedimiento detallado» después de cada operación.
 
 ## Pruebas
 
@@ -87,12 +94,12 @@ source .venv/bin/activate
 python -m pytest tests/ -v
 ```
 
-Las pruebas verifican navegación, el cifrado/descifrado de Vigenère,
-la validación de la clave, la conservación de caracteres y la
-visualización opcional del procedimiento.
+Las pruebas verifican navegación, algoritmos, validación de claves,
+conservación de caracteres, generación de pasos tabulares e
+integración de la vista interactiva.
 
 ## Nota sobre los requisitos del docente
 
 El documento de la tarea exige explícitamente los algoritmos **César,
 sustitución simple y Vigenère** (objetivo específico 1). Los tres están
-implementados; Playfair aparece en el menú, pero todavía está pendiente.
+implementados; Playfair también está disponible como módulo adicional.

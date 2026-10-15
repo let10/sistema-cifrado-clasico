@@ -1,5 +1,7 @@
 """Cifrado Cesar con procedimiento tecnico en tablas ASCII."""
 
+from algoritmos.modelos import PasoProcedimiento
+
 ALFABETO = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
@@ -29,6 +31,72 @@ def cifrar(mensaje, clave):
 
 def descifrar(mensaje, clave):
     return _desplazar(mensaje, -_validar_clave(clave))
+
+
+def generar_pasos(
+    mensaje: str,
+    clave: str,
+    es_cifrado: bool,
+) -> tuple[PasoProcedimiento, ...]:
+    desplazamiento = _validar_clave(clave)
+    if not es_cifrado:
+        desplazamiento = -desplazamiento
+    accion = "CIFRAR" if es_cifrado else "DESCIFRAR"
+    salida = _desplazar(mensaje, desplazamiento)
+
+    parametros = PasoProcedimiento(
+        titulo="Datos de la operación",
+        explicacion="El desplazamiento se reduce módulo 26. A cada letra se le suma para cifrar o se le resta para descifrar.",
+        encabezados=("Dato", "Valor"),
+        filas=(
+            ("Operación", accion),
+            ("Mensaje de entrada", mensaje),
+            ("Clave ingresada", str(clave)),
+            ("Desplazamiento efectivo", str(desplazamiento % 26)),
+            ("Resultado", salida),
+        ),
+    )
+    alfabeto = PasoProcedimiento(
+        titulo="Correspondencia de alfabetos",
+        explicacion="Cada letra del alfabeto de entrada se transforma en la letra situada el desplazamiento indicado.",
+        encabezados=("Posición", "Entrada", "Posición salida", "Salida"),
+        filas=tuple(
+            (
+                str(indice),
+                ALFABETO[indice],
+                str((indice + desplazamiento) % 26),
+                ALFABETO[(indice + desplazamiento) % 26],
+            )
+            for indice in range(26)
+        ),
+    )
+
+    filas_caracteres = []
+    for indice, caracter in enumerate(mensaje, start=1):
+        if caracter.isascii() and caracter.isalpha():
+            posicion = ord(caracter.upper()) - ord("A")
+            posicion_salida = (posicion + desplazamiento) % 26
+            base = ord("A") if caracter.isupper() else ord("a")
+            caracter_salida = chr(base + posicion_salida)
+            operacion = (
+                f"({posicion} {'+' if es_cifrado else '-'} "
+                f"{abs(desplazamiento)}) mod 26 = {posicion_salida}"
+            )
+        else:
+            posicion = "-"
+            operacion = "Se conserva; no es letra A-Z"
+            caracter_salida = caracter
+        filas_caracteres.append(
+            (str(indice), caracter,             str(posicion), operacion, caracter_salida)
+        )
+
+    transformacion = PasoProcedimiento(
+        titulo="Transformación de cada carácter",
+        explicacion="Los espacios, números, signos y caracteres fuera de A-Z se conservan sin aplicar desplazamiento.",
+        encabezados=("#", "Entrada", "Posición", "Cálculo", "Salida"),
+        filas=tuple(filas_caracteres),
+    )
+    return parametros, alfabeto, transformacion
 
 
 def _tabla(encabezados, filas, anchos):

@@ -1,5 +1,7 @@
 """Sustitucion Simple con procedimiento tecnico en tablas ASCII."""
 
+from algoritmos.modelos import PasoProcedimiento
+
 ALFABETO = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
@@ -37,6 +39,66 @@ def descifrar(mensaje, clave):
     clave = _validar_clave(clave)
     mapa = {clave[i]: ALFABETO[i] for i in range(26)}
     return _sustituir(mensaje, mapa)
+
+
+def generar_pasos(
+    mensaje: str,
+    clave: str,
+    es_cifrado: bool,
+) -> tuple[PasoProcedimiento, ...]:
+    clave_validada = _validar_clave(clave)
+    origen, destino = (
+        (ALFABETO, clave_validada) if es_cifrado else (clave_validada, ALFABETO)
+    )
+    mapa = {origen[indice]: destino[indice] for indice in range(26)}
+    salida = _sustituir(mensaje, mapa)
+    equivalencias = PasoProcedimiento(
+        titulo="Alfabeto de sustitución",
+        explicacion=(
+            "La clave es una permutación de A-Z. En descifrado se invierte "
+            "la correspondencia entre ambos alfabetos."
+        ),
+        encabezados=("Posición", "Letra de entrada", "Letra de salida"),
+        filas=tuple(
+            (str(indice), origen[indice], destino[indice])
+            for indice in range(26)
+        ),
+    )
+
+    filas_caracteres = []
+    for indice, caracter in enumerate(mensaje, start=1):
+        if caracter.isascii() and caracter.isalpha():
+            letra = caracter.upper()
+            transformado = mapa[letra]
+            caracter_salida = (
+                transformado if caracter.isupper() else transformado.lower()
+            )
+            explicacion = "Sustitución directa"
+        else:
+            caracter_salida = caracter
+            explicacion = "Se conserva; no es letra A-Z"
+        filas_caracteres.append(
+            (str(indice), caracter, explicacion, caracter_salida)
+        )
+
+    transformacion = PasoProcedimiento(
+        titulo="Transformación de cada carácter",
+        explicacion="Se sustituye cada letra usando la tabla; los demás caracteres se mantienen sin cambios.",
+        encabezados=("#", "Entrada", "Regla aplicada", "Salida"),
+        filas=tuple(filas_caracteres),
+    )
+    parametros = PasoProcedimiento(
+        titulo="Datos de la operación",
+        explicacion="El alfabeto de entrada se empareja posición por posición con la clave (o con A-Z al descifrar).",
+        encabezados=("Dato", "Valor"),
+        filas=(
+            ("Operación", "CIFRAR" if es_cifrado else "DESCIFRAR"),
+            ("Mensaje de entrada", mensaje),
+            ("Clave validada", clave_validada),
+            ("Resultado", salida),
+        ),
+    )
+    return parametros, equivalencias, transformacion
 
 
 def _tabla(encabezados, filas, anchos):
